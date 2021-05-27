@@ -105,6 +105,7 @@ Electre_1 <-
     }
     print("La matrice des indices de concordance")
     print(concordance)
+  
     
     #  *******************************                Calcul matrice des discordances              ***************************************   #
     
@@ -147,8 +148,8 @@ Electre_1 <-
       discordance =md
     }
     cat("\n")
-    print("La matrice de discordance")
-    print(t(discordance))
+    print("La matrice des indices de discordance")
+    print(discordance)
     
     
     matfiltre <- matrix (rep(0, n*n), n, n)
@@ -217,29 +218,57 @@ Electre_1 <-
 
 
 
-performanceMatrix <- cbind(
-  c(10,0,0,20,20,20),
-  c(20,5,10,5,10,10),
-  c(5, 5,0,10,15,20),
-  c(10,16, 16,10,10,13),
-  c(16,10,7,13,13,13))
+get_performanceMatrix <- function(ma){
+  
+  n=nrow(ma)
+  c1 = c()
+  c2 = c()
+  c3 = c()
+  pm <- matrix(data = 0, nrow = n, ncol = 3)
+  for (i in 1:n){
+    c1 <- append(c1,mean(ma[,i]))
+    c2 <- append(c2,min(ma[,i][ma[,i]>7]))
+    c3 <- append(c3,var(ma[,i]))
+  }
+  pm[,1] = c1
+  pm[,2] = c2
+  pm[,3] = c3
+  
+  return(pm) 
+  
+}
+help(matrix)
+
+
+notes_etduiants <-cbind(
+  c(7, 13, 8, 12, 11),
+  c(8, 11, 11, 12, 11),
+  c(20, 2, 10, 3, 15),
+  c(16, 14, 16, 14, 13),
+  c(12, 12, 8, 8, 10)
+)
+
+
+
+performanceMatrix <- get_performanceMatrix(notes_etduiants)
 
 
 
 
-alternatives <-c("p1","P2","P3","P4","p5","p6")
-criteria <-c("cr1","cr2","Cr3","cr4","c5")
+alternatives <-c("e1","e2","e3","e4","e5")
+criteria <-c("cr1","cr2","cr3")
 
 
-criteriaWeights <- c(3,2,3,1,1)
+criteriaWeights <- c(0.5,0.25,0.25)
 
-minmaxcriteria <-c("max","max","max","max","max")
+minmaxcriteria <-c("max","max","min")
+
 Electre_1(performanceMatrix,
           alternatives,
           criteria,
           criteriaWeights,
           minmaxcriteria,
-          concordance_threshold=0.8,discordance_threshold=0.3)
+          concordance_threshold=0.4,discordance_threshold=0.3)
 
 
 
